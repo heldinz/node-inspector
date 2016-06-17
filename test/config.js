@@ -55,8 +55,22 @@ describe('Config', function() {
     it('handles --hidden', function() {
       var config = givenConfigFromArgs('--hidden="abc"');
       expect(config.hidden).to.satisfy(util.isArray);
-      expect(config.hidden.length).to.equal(1);
+      expect(config.hidden.length).to.equal(2);
       expect(config.hidden[0]).to.satisfy(util.isRegExp);
+    });
+
+    it('handles --extensions', function() {
+      var config = givenConfigFromArgs(['--extensions=".js"', '--extensions=".jsx"', '--extensions=".babel"', '--extensions=".blargh"']);
+      console.log('config.extensions: ' + config.extensions);
+      expect(config.extensions).to.satisfy(util.isArray);
+      expect(config.extensions.length).to.equal(4);
+    });
+
+    it('handles --extensions with two', function() {
+      var config = givenConfigFromArgs(['--extensions=".babel"', '--extensions=".blargh"']);
+      console.log('config.extensions: ' + config.extensions);
+      expect(config.extensions).to.satisfy(util.isArray);
+      expect(config.extensions.length).to.equal(2);
     });
 
     it('handles --stack-trace-limit', function() {
@@ -117,6 +131,8 @@ describe('Config', function() {
       expect(config.preload, 'default preload value').to.equal(true);
       expect(config.hidden, 'default hidden value is array').to.satisfy(util.isArray);
       expect(config.hidden.length, 'default hidden array is empty').to.equal(0);
+      expect(config.extensions, 'default extensions value is array').to.satisfy(util.isArray);
+      expect(config.extensions.length, 'default extensions array').to.equal(3);
       expect(config.stackTraceLimit, 'default stack-trace-limit value').to.equal(50);
       expect(config.nodejs, 'default nodejs value is array').to.satisfy(util.isArray);
       expect(config.debugBrk, 'default debug-brk value').to.equal(false);

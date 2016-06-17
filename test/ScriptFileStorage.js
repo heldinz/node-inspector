@@ -211,7 +211,6 @@ describe('ScriptFileStorage', function() {
     );
   });
 
-
   it('disables preloading files', function(done) {
     givenTempFiles('app.js', 'mod.js');
     storage = createScriptFileStorage({preload: false});
@@ -222,6 +221,54 @@ describe('ScriptFileStorage', function() {
       function(err, files) {
         if (err) throw err;
         expect(files).to.have.length(0);
+        done();
+      }
+    );
+  });
+
+  it('includes .js, .jsx and .es6 files by default', function(done) {
+    var expectedFiles = givenTempFiles('app.js',
+      'root.js',
+      'lib/helper.js',
+      'test/unit.es6',
+      'node_modules/module/index.js',
+      'components/file.jsx');
+
+    givenTempFiles('package.json');
+
+    storage = createScriptFileStorage();
+    storage.findAllApplicationScripts(
+      TEMP_DIR,
+      path.join(TEMP_DIR, 'app.js'),
+      function(err, files) {
+        if (err) throw err;
+        expect(files.map(relativeToTemp))
+          .to.have.members(expectedFiles.map(relativeToTemp));
+        expect(files).to.have.length(expectedFiles.length);
+        done();
+      }
+    );
+  });
+
+  it('uses configuration option for file extensions', function(done) {
+    var expectedFiles = givenTempFiles('app.js',
+      'root.js',
+      'lib/helper.js',
+      'test/unit.es6',
+      'node_modules/module/index.js',
+      'components/file.jsx').slice(0,5);
+
+    givenTempFiles('package.json');
+
+    storage = createScriptFileStorage({extensions: ['.js','.es6']});
+    storage.findAllApplicationScripts(
+      TEMP_DIR,
+      path.join(TEMP_DIR, 'app.js'),
+      function(err, files) {
+        if (err) throw err;
+        expect(files.map(relativeToTemp))
+          .to.have.members(expectedFiles.map(relativeToTemp));
+        expect(files).to.have.length(expectedFiles.length);
         done();
       }
     );

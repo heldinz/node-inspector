@@ -17,7 +17,7 @@ describe('node-debug', function() {
         inspector: {
           host: '127.0.0.1',
           port: 8080,
-          args: ['--web-host=127.0.0.1']
+          args: ['--web-host=127.0.0.1', '--extensions=.js --extensions=.jsx --extensions=.es6']
         }
       });
     });
